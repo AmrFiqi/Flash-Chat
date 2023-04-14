@@ -21,3 +21,5 @@ class WelcomeViewController: UIViewController {
     
 
 }
+
+// MARK: - Preparing to add firebase
