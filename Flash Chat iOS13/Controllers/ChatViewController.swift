@@ -8,6 +8,8 @@
 
 import UIKit
 import FirebaseAuth
+import FirebaseFirestore
+
 
 class ChatViewController: UIViewController {
     
@@ -18,15 +20,24 @@ class ChatViewController: UIViewController {
     
     // MARK: - Variables
     
-    var messages: [Message] = [
-        Message(sender: "amr@gm.com", body: "hey"),
-        Message(sender: "learning@lea2.com", body: "hello"),
-        Message(sender: "amr@gm.com", body: "sup mate"),
-    ]
+    var messages: [Message] = []
+    
+    let db = Firestore.firestore()
     
     // MARK: - IBAction
     
     @IBAction func sendPressed(_ sender: UIButton) {
+        if let message = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
+            db.collection(K.FStore.collectionName).addDocument(data: [K.FStore.senderField : messageSender, K.FStore.bodyField: message]) { error in
+                if let e = error {
+                    print(String(describing: e))
+                }
+                else {
+                    print("Added data successfully")
+                }
+            }
+        }
+        
     }
     
     @IBAction func logOutPressed(_ sender: Any) {
@@ -45,6 +56,7 @@ class ChatViewController: UIViewController {
         super.viewDidLoad()
         
         tableView.dataSource = self
+        loadMessaages()
         updateUI()
     }
     
@@ -53,7 +65,30 @@ class ChatViewController: UIViewController {
         navigationItem.hidesBackButton = true
         tableView.register(UINib(nibName: K.cellNibName, bundle: nil), forCellReuseIdentifier: K.cellIdentifier)
     }
-
+    
+    func loadMessaages() {
+        db.collection(K.FStore.collectionName).getDocuments { querySnapshot, error in
+            if let e = error {
+                print("There was an issue getting data from Firestore \(e)")
+            }
+            else {
+                if let snapshotDocuments = querySnapshot?.documents {
+                    for doc in snapshotDocuments {
+                        let data = doc.data()
+                        if let messageSender = data[K.FStore.senderField] as? String, let messageBody = data[K.FStore.bodyField] as? String {
+                            let newMessage = Message(sender: messageSender, body: messageBody)
+                            self.messages.append(newMessage)
+                            
+                            DispatchQueue.main.async {
+                                self.tableView.reloadData()
+                            }
+                            
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 // MARK: - UI Table View Datasourc
