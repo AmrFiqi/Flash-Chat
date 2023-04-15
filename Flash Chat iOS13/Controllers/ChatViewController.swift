@@ -76,6 +76,7 @@ class ChatViewController: UIViewController {
         db.collection(K.FStore.collectionName)
             .order(by: K.FStore.dateField)
             .addSnapshotListener { querySnapshot, error in
+                
             self.messages = []
             if let e = error {
                 print("There was an issue getting data from Firestore \(e)")
@@ -89,8 +90,9 @@ class ChatViewController: UIViewController {
                             self.messages.append(newMessage)
                             
                             DispatchQueue.main.async {
-                                
+                                let indexPath = IndexPath(row: self.messages.count-1, section: 0)
                                 self.tableView.reloadData()
+                                self.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
                             }
                             
                         }

@@ -15,7 +15,9 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
+        navigationController?.navigationBar.barTintColor = UIColor(named: K.BrandColors.blue)
+        navigationController?.navigationBar.titleTextAttributes = [.foregroundColor: UIColor.white]
         titleLabel.text = K.appName
     }
     
