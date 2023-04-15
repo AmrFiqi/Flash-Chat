@@ -12,6 +12,7 @@ class MessageCell: UITableViewCell {
 
     // MARK: - IBOutlets
     
+    @IBOutlet var leftImageView: UIImageView!
     @IBOutlet var rightImageView: UIImageView!
     @IBOutlet var label: UILabel!
     @IBOutlet var messageBubble: UIView!
