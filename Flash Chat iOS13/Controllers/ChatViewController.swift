@@ -28,7 +28,11 @@ class ChatViewController: UIViewController {
     
     @IBAction func sendPressed(_ sender: UIButton) {
         if let message = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
-            db.collection(K.FStore.collectionName).addDocument(data: [K.FStore.senderField : messageSender, K.FStore.bodyField: message]) { error in
+            db.collection(K.FStore.collectionName).addDocument(data: [
+                K.FStore.senderField : messageSender,
+                K.FStore.bodyField: message,
+                K.FStore.dateField: Date().timeIntervalSince1970
+            ]) { error in
                 if let e = error {
                     print(String(describing: e))
                 }
@@ -37,6 +41,7 @@ class ChatViewController: UIViewController {
                 }
             }
         }
+        messageTextfield.text = ""
         
     }
     
@@ -67,7 +72,11 @@ class ChatViewController: UIViewController {
     }
     
     func loadMessaages() {
-        db.collection(K.FStore.collectionName).getDocuments { querySnapshot, error in
+        
+        db.collection(K.FStore.collectionName)
+            .order(by: K.FStore.dateField)
+            .addSnapshotListener { querySnapshot, error in
+            self.messages = []
             if let e = error {
                 print("There was an issue getting data from Firestore \(e)")
             }
@@ -80,6 +89,7 @@ class ChatViewController: UIViewController {
                             self.messages.append(newMessage)
                             
                             DispatchQueue.main.async {
+                                
                                 self.tableView.reloadData()
                             }
                             
