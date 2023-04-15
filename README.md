@@ -1,3 +1,10 @@
+# DISCLAIMER
+This app UI and readme is created by Angela as a part of the course "The Complete iOS App Development".
+However the code is done by me as a project I was learning during the course (Amr Fiqi)
+
+![](https://github.com/AmrFiqi/Flash-Chat/blob/master/Chat%20App.gif)
+
+
 ![App Brewery Banner](Documentation/AppBreweryBanner.png)
 
 # Flash-Chat
