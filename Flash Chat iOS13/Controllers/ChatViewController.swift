@@ -24,7 +24,7 @@ class ChatViewController: UIViewController {
     
     let db = Firestore.firestore()
     
-    // MARK: - IBAction
+    // MARK: - IBAction Methods
     
     @IBAction func sendPressed(_ sender: UIButton) {
         if let message = messageTextfield.text, let messageSender = Auth.auth().currentUser?.email {
